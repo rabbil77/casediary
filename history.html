@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>মামলার ইতিহাস</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* Image Modal */
+#imageModal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+  overflow:auto;
+}
+#imageModalContent {
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  max-width:95%;
+  max-height:95%;
+}
+#imageModal img {
+  max-width: 100%;
+  max-height: 100%;
+  transform-origin: center top;
+}
+#imageToolbar {
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:6px;
+  z-index:1001;
+}
+#imageToolbar button {
+  padding:6px 12px;
+  font-size:16px;
+  cursor:pointer;
+}
+#imageModalClose {
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-size:18px;
+  color:white;
+  background:#444;
+  border:none;
+  padding:4px 8px;
+  cursor:pointer;
+  z-index:1002;
+}
+</style>
+</head>
+<body>
+
+<script>
+if(localStorage.getItem("logged")!=="yes"){ location.href="login.html"; }
+</script>
+
+<div class="container">
+<h2>মামলার ইতিহাস</h2>
+
+<div style="margin-bottom:10px;padding:8px;border:1px solid #ccc;">
+  <strong>মামলা নং:</strong> <span id="caseNoShow"></span><br>
+  <strong>পক্ষ:</strong> <span id="partyShow"></span>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>শুনানির তারিখ</th>
+  <th>উদ্দেশ্য</th>
+  <th>নোট</th>
+  <th>ডিলিট</th>
+</tr>
+</thead>
+<tbody id="historyBody"></tbody>
+</table>
+
+<button onclick="goBack()">⬅ ফিরে যান</button>
+</div>
+
+<!-- IMAGE MODAL -->
+<div id="imageModal">
+  <div id="imageModalContent">
+    <button id="imageModalClose" onclick="closeImageModal()">❌</button>
+    <div id="imageToolbar">
+      <button onclick="zoomIn()">🔍 +</button>
+      <button onclick="zoomOut()">🔍 -</button>
+      <button onclick="downloadImage()">⬇ Download</button>
+    </div>
+    <img id="modalImage">
+  </div>
+</div>
+
+<script>
+const cn = localStorage.getItem("viewHistory");
+const data = JSON.parse(localStorage.getItem("cases")) || {};
+const c = data[cn];
+const historyBody = document.getElementById("historyBody");
+const caseNoShow = document.getElementById("caseNoShow");
+const partyShow = document.getElementById("partyShow");
+
+if(!c){ alert("মামলার তথ্য পাওয়া যায়নি"); location.href="index.html"; }
+caseNoShow.innerText = cn; partyShow.innerText = c.party || "";
+
+/* ---------- RENDER HISTORY ---------- */
+function renderHistory(){
+  historyBody.innerHTML = "";
+  c.stageHistory.forEach((h,i)=>{
+    historyBody.innerHTML += `
+    <tr>
+      <td>${h.nextDate}</td>
+      <td>${h.nextPurpose||""}</td>
+      <td>
+        ${h.notes||""} 
+        <button onclick="editNote(${i})">✏️</button>
+      </td>
+      <td>
+        <button onclick="deleteHistory(${i})">🗑️</button>
+      </td>
+    </tr>`;
+  });
+}
+
+/* ---------- EDIT NOTES ---------- */
+function editNote(i){
+  const n = prompt("নোট লিখুন / সম্পাদনা করুন", c.stageHistory[i].notes||"");
+  if(n!==null){
+    c.stageHistory[i].notes = n;
+    localStorage.setItem("cases", JSON.stringify(data));
+    renderHistory();
+  }
+}
+
+/* ---------- DELETE HISTORY ---------- */
+function deleteHistory(i){
+  if(!confirm("এই শুনানির সম্পূর্ণ ইতিহাস মুছে ফেলবেন?")) return;
+  c.stageHistory.splice(i,1);
+  localStorage.setItem("cases", JSON.stringify(data));
+  renderHistory();
+}
+
+/* ---------- GO BACK ---------- */
+function goBack(){ location.href="index.html"; }
+
+/* ---------- IMAGE MODAL ---------- */
+let scale = 1;
+function zoomIn(){ scale += 0.2; document.getElementById("modalImage").style.transform=`scale(${scale})`; }
+function zoomOut(){ scale = Math.max(0.2, scale-0.2); document.getElementById("modalImage").style.transform=`scale(${scale})`; }
+function downloadImage(){ const img=document.getElementById("modalImage"); const a=document.createElement("a"); a.href=img.src; a.download="image.jpg"; a.click(); }
+function closeImageModal(){ document.getElementById("imageModal").style.display="none"; document.getElementById("modalImage").src=""; }
+
+document.getElementById("modalImage").addEventListener("wheel", function(e){
+  e.preventDefault();
+  if(e.deltaY<0) zoomIn(); else zoomOut();
+},{passive:false});
+
+renderHistory();
+</script>
+
+</body>
+</html>

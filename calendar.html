@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Calendar</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>📅 Case Hearing Calendar</h2>
+
+<div class="calendar-nav">
+  <button onclick="changeMonth(-1)">⬅</button>
+  <span id="monthYear"></span>
+  <button onclick="changeMonth(1)">➡</button>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<h3 id="selectedDate"></h3>
+
+<table>
+<thead>
+<tr>
+  <th>Case No</th>
+  <th>Party</th>
+  <th>Court</th>
+  <th>Purpose</th>
+</tr>
+</thead>
+<tbody id="caseList"></tbody>
+</table>
+
+<button onclick="location.href='index.html'">⬅ Back</button>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

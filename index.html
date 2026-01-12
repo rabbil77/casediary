@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>দৈনিক কার্যতালিকা</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+if(localStorage.getItem("logged")!=="yes"){
+  location.href="login.html";
+}
+</script>
+
+<div class="container">
+
+<h2>অ্যাডভোকেট মোঃ আব্দুর রাজ্জাক — দৈনিক কার্যতালিকা</h2>
+
+<div class="date-bar">
+  <button onclick="changeDate(-1)">⬅</button>
+  <span id="dateDisplay"></span>
+  <button onclick="changeDate(1)">➡</button>
+  <button onclick="toggleCalendar()">📅</button>
+</div>
+
+<input type="date" id="calendarPicker"
+       onchange="jumpToDate(this.value)"
+       style="display:none;margin:8px auto;">
+
+<input id="searchBox"
+       placeholder="মামলা নং / পক্ষ অনুসন্ধান করুন"
+       oninput="loadTable()"
+       style="margin:8px auto;">
+
+<!-- ACTION BAR -->
+<div class="action-bar">
+  <button onclick="printBangla()">🖨️ প্রিন্ট</button>
+  <button onclick="openForm()">➕ নতুন মামলা</button>
+  <button onclick="backupData()">💾 ব্যাকআপ</button>
+  <button onclick="restoreData()">♻️ রিস্টোর</button>
+</div>
+
+<input type="file" id="restoreFile" accept=".json" style="display:none">
+
+<table>
+<thead>
+<tr>
+  <th>ক্রমিক</th>
+  <th>মামলা নং</th>
+  <th>পক্ষ</th>
+  <th>আইনজীবী</th>
+  <th>আদালত</th>
+  <th>তারিখের উদ্দেশ্য</th>
+  <th>অ্যাকশন</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+<!-- ENTRY FORM -->
+<div id="entryForm" class="modal">
+<div class="modal-content">
+
+<h3>মামলা তথ্য</h3>
+
+<input id="caseNo" placeholder="মামলা নং">
+<input id="party" placeholder="পক্ষ">
+<input id="advocate" placeholder="আইনজীবী">
+<input id="court" placeholder="আদালত">
+
+<input id="nextDate" type="date">
+<input id="nextPurpose" placeholder="তারিখের উদ্দেশ্য">
+<input id="nextNotes" placeholder="নোট লিখুন (ঐচ্ছিক)">
+
+<button onclick="saveEntry()">💾 সংরক্ষণ</button>
+<button onclick="closeForm()">❌ বন্ধ</button>
+
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

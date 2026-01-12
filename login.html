@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>লগইন</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+<h2>জেলা আদালত লগইন</h2>
+
+<input id="user" placeholder="ইউজারনেম">
+<input id="pass" type="password" placeholder="পাসওয়ার্ড">
+
+<button onclick="login()">লগইন</button>
+
+<p>ডেমো: <b>admin / </b></p>
+</div>
+
+<script>
+function login(){
+  if(user.value==="admin" && pass.value==="7562"){
+    localStorage.setItem("logged","yes");
+    location.href="index.html";
+  } else alert("ভুল তথ্য");
+}
+</script>
+
+</body>
+</html>
